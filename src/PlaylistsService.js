@@ -5,10 +5,17 @@ class PlaylistsService {
     this._pool = new Pool()
   }
 
-  async getById (playlistId) {
+  async getById ({
+    playlistId,
+    userId
+  }) {
     const result = await this._pool.query(`SELECT p.id, p.name, u.fullname as owner FROM playlists p
+    LEFT JOIN collaborations c ON c.playlist_id = p.id
     JOIN users u ON u.id = p.owner
-    WHERE p.id = $1`, [
+    WHERE (p.owner = $1 OR c.user_id = $1)
+    AND p.id = $2
+    GROUP BY p.id, u.username`, [
+      userId,
       playlistId
     ])
 
