@@ -1,19 +1,19 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer')
 
 class MailSender {
-  constructor() {
+  constructor () {
     this._transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
       secure: true,
       auth: {
         user: process.env.MAIL_ADDRESS,
-        pass: process.env.MAIL_PASSWORD,
-      },
-    });
+        pass: process.env.MAIL_PASSWORD
+      }
+    })
   }
 
-  sendEmail(targetEmail, content) {
+  sendEmail (targetEmail, content) {
     const message = {
       from: 'OpenMusic App',
       to: targetEmail,
@@ -22,13 +22,13 @@ class MailSender {
       attachments: [
         {
           filename: 'playlist.json',
-          content,
-        },
-      ],
-    };
+          content
+        }
+      ]
+    }
 
-    return this._transporter.sendMail(message);
+    return this._transporter.sendMail(message)
   }
 }
 
-module.exports = MailSender;
+module.exports = MailSender

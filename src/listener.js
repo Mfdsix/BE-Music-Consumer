@@ -14,8 +14,13 @@ class Listener {
         playlistId,
         userId
       })
-      const result = await this._mailSender.sendEmail(targetEmail, JSON.stringify(playlist))
-      console.log(result)
+
+      if (playlist) {
+        const result = await this._mailSender.sendEmail(targetEmail, JSON.stringify({ playlist }))
+        console.log(result)
+      } else {
+        console.log('Playlist tidak ditemukan')
+      }
     } catch (error) {
       console.error(error)
     }
