@@ -5,24 +5,18 @@ class PlaylistsService {
     this._pool = new Pool()
   }
 
-  async getById ({
-    playlistId,
-    userId
-  }) {
+  async getById (playlistId) {
     const result = await this._pool.query(`SELECT p.id, p.name, u.fullname as owner FROM playlists p
-    LEFT JOIN collaborations c ON c.playlist_id = p.id
     JOIN users u ON u.id = p.owner
-    WHERE (p.owner = $1 OR c.user_id = $1)
-    AND p.id = $2
+    WHERE p.id = $1
     GROUP BY p.id, u.username`, [
-      userId,
       playlistId
     ])
 
+    if (result.rows.length === 0) throw new Error('Playlist tidak ditemukan')
+
     const playlist = result.rows[0]
-    if (playlist) {
-      playlist.songs = await this.getSongs(playlistId)
-    }
+    playlist.songs = await this.getSongs(playlistId)
 
     return playlist
   }
